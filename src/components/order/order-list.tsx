@@ -16,11 +16,14 @@ const OrderList: React.FC<Props> = ({ data }) => (
           (order, i) =>
             !!order && (
               <li key={i} className={`${className}__item`}>
-                {order.id} ({order.customer.name})
+                {order.id} ({order.customer.email})
               </li>
             ),
         )}
     </ol>
+    <div>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+    </div>
   </div>
 );
 
