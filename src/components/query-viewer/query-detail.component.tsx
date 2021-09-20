@@ -2,7 +2,8 @@ import { LazyQueryHookOptions, useLazyQuery } from '@apollo/client';
 import * as React from 'react';
 import { print } from 'graphql/language/printer';
 import { DocumentNode } from 'graphql/language/ast';
-
+import { Button } from '@mui/material';
+import './query-detail.component.scss';
 interface Props {
   queryDoc: DocumentNode;
   options?: LazyQueryHookOptions;
@@ -22,7 +23,7 @@ const QueryDetail: React.FC<Props> = ({ queryDoc, options, setQueryState }) => {
       {/* <p>{print(queryDoc)}</p> */}
       {/* todo: style it */}
       <div>
-        <p>document: </p>
+        <p>Document: </p>
 
         {print(queryDoc)}
       </div>
@@ -31,8 +32,9 @@ const QueryDetail: React.FC<Props> = ({ queryDoc, options, setQueryState }) => {
 
         {JSON.stringify(options)}
       </div>
-
-      <button onClick={() => loadGreeting()}>Load greeting</button>
+      <Button onClick={() => loadGreeting()} variant="outlined">
+        Make request
+      </Button>
     </div>
   );
 };

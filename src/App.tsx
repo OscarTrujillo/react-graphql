@@ -7,6 +7,9 @@ import {
   OrderDocument,
   OrderListDocument,
 } from './generated/graphql';
+import './App.scss';
+import { Paper } from '@mui/material';
+
 const App = () => {
   const queryList = [
     {
@@ -52,14 +55,20 @@ const App = () => {
   return (
     <div className="app">
       <h3> Welcome to React </h3>
-      <ControlledAccordions
-        queryList={queryList}
-        queryDoc={queryDocState}
-        options={optionsState}
-        setSelectedQuery={setSelectedQueryIndex}
-        setQueryState={setQueryState}
-      />
-      <ResponseContainer queryState={queryState} />
+      <div>
+        <ControlledAccordions
+          queryList={queryList}
+          queryDoc={queryDocState}
+          options={optionsState}
+          setSelectedQuery={setSelectedQueryIndex}
+          setQueryState={setQueryState}
+        />
+        <div className="response-container">
+          <Paper elevation={3}>
+            <ResponseContainer queryState={queryState} />
+          </Paper>
+        </div>
+      </div>
     </div>
   );
 };

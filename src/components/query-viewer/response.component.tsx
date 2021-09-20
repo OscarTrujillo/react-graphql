@@ -8,7 +8,7 @@ const className = 'response';
 
 const ResponseView: React.FC<Props> = ({ data }) => (
   <div className={className}>
-    <h3>Response:</h3>
+    <span>Response:</span>
     <div>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>

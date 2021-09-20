@@ -1,0 +1,16 @@
+.app {
+  padding: 1rem 2rem;
+  > div {
+    display: flex;
+
+    .query-list,
+    .response-container {
+      width: 100%;
+      max-height: calc(100vh - 4em - 28px);
+      overflow: auto;
+    }
+    .response-container {
+      margin-left: 2rem;
+    }
+  }
+}
