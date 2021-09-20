@@ -1,55 +1,27 @@
-import { LazyQueryHookOptions, useLazyQuery } from '@apollo/client';
+import { OperationVariables, QueryTuple } from '@apollo/client';
 import * as React from 'react';
 import ResponseView from './response.component';
-import { print } from 'graphql/language/printer';
-import { DocumentNode } from 'graphql/language/ast';
 
 interface Props {
-  queryDoc: DocumentNode;
-  options?: LazyQueryHookOptions;
+  queryState: QueryTuple<any, OperationVariables>;
 }
+const ResponseContainer: React.FC<Props> = ({ queryState }) => {
+  if (queryState) {
+    const [_loadGreeting, { called, loading, data, error }] = queryState;
 
-const ResponseContainer: React.FC<Props> = ({ queryDoc, options }) => {
-  // const { data, error, loading } = query();
-  const [loadGreeting, { called, loading, data, error }] = useLazyQuery(
-    queryDoc,
-    options,
-  );
+    if (called && loading) return <p>Loading ...</p>;
 
-  if (called && loading) return <p>Loading ...</p>;
+    if (!called) {
+      return <div>call</div>;
+    }
 
-  if (!called) {
-    return (
-      <div>
-        {/* {JSON.stringify(print(queryDoc))} */}
-        {/* <p>{print(queryDoc)}</p> */}
-        {/* todo: style it */}
-        <div>
-          <p>document: </p>
+    if (error || !data) {
+      return <div>ERROR</div>;
+    }
 
-          {print(queryDoc)}
-        </div>
-        <div>
-          <p>Options: </p>
-
-          {JSON.stringify(options)}
-        </div>
-
-        <button onClick={() => loadGreeting()}>Load greeting</button>
-      </div>
-    );
+    return <ResponseView data={data} />;
   }
-
-  if (error || !data) {
-    return (
-      <div>
-        ERROR
-        <button onClick={() => loadGreeting()}>Try again</button>;
-      </div>
-    );
-  }
-
-  return <ResponseView data={data} />;
+  return <div>Select a query</div>;
 };
 
 export default ResponseContainer;

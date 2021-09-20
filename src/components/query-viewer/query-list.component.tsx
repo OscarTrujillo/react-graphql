@@ -4,50 +4,36 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {
-  EmployeeListDocument,
-  ItemListDocument,
-  OrderDocument,
-  OrderListDocument,
-} from '../../generated/graphql';
 
-import ResponseContainer from './response-container.component';
+import QueryDetail from './query-detail.component';
+import { LazyQueryHookOptions } from '@apollo/client';
+import { DocumentNode } from 'graphql/language/ast';
 
-export default function ControlledAccordions() {
-  const [expanded, setExpanded] = React.useState<string | false>(false);
-
-  const queryList = [
-    {
-      name: 'EmployeeList',
-      type: 'Query',
-      queryDoc: EmployeeListDocument,
-    },
-    {
-      name: 'ItemList',
-      type: 'Query',
-      queryDoc: ItemListDocument,
-    },
-    {
-      name: 'OrderList',
-      type: 'Query',
-      queryDoc: OrderListDocument,
-    },
-    {
-      name: 'Order',
-      type: 'Query',
-      queryDoc: OrderDocument,
-      options: {
-        variables: { id: 'ed8484ee-6384-4aa8-a2c5-dcfc5f6066fe' },
-      },
-    },
-  ];
+interface Props {
+  queryList: any[];
+  queryDoc: DocumentNode;
+  options?: LazyQueryHookOptions;
+  setQueryState: any;
+  setSelectedQuery?: React.Dispatch<number | false>;
+}
+const ControlledAccordions: React.FC<Props> = ({
+  queryList,
+  queryDoc,
+  options,
+  setQueryState,
+  setSelectedQuery,
+}) => {
+  const [expanded, setExpanded] = React.useState<number | false>(false);
 
   const className = 'query-list';
 
   const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    (panel: number) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
+  React.useEffect(() => {
+    setSelectedQuery(expanded);
+  }, [expanded]);
 
   return (
     <div className={className}>
@@ -56,8 +42,9 @@ export default function ControlledAccordions() {
           (query, i) =>
             !!query && (
               <Accordion
-                expanded={expanded === `panel_${i}`}
-                onChange={handleChange(`panel_${i}`)}
+                key={i}
+                expanded={expanded === i}
+                onChange={handleChange(i)}
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
@@ -72,14 +59,20 @@ export default function ControlledAccordions() {
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <ResponseContainer
-                    queryDoc={query.queryDoc}
-                    options={query.options}
-                  />
+                  {/* inject only when accordion is open */}
+                  {expanded === i && queryDoc && (
+                    <QueryDetail
+                      setQueryState={setQueryState}
+                      queryDoc={queryDoc}
+                      options={options}
+                    />
+                  )}
                 </AccordionDetails>
               </Accordion>
             ),
         )}
     </div>
   );
-}
+};
+
+export default ControlledAccordions;
