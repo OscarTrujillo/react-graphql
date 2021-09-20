@@ -4,26 +4,49 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import {
+  EmployeeListDocument,
+  ItemListDocument,
+  OrderDocument,
+  OrderListDocument,
+} from './../../generated/graphql';
 import QueryDetail from './query-detail.component';
-import { LazyQueryHookOptions } from '@apollo/client';
-import { DocumentNode } from 'graphql/language/ast';
+import { IQueryList } from '../../App';
+import { OperationVariables, QueryTuple } from '@apollo/client';
 
 interface Props {
-  queryList: any[];
-  queryDoc: DocumentNode;
-  options?: LazyQueryHookOptions;
-  setQueryState: any;
-  setSelectedQuery?: React.Dispatch<number | false>;
+  setQueryState: React.Dispatch<QueryTuple<any, OperationVariables>>;
 }
-const ControlledAccordions: React.FC<Props> = ({
-  queryList,
-  queryDoc,
-  options,
-  setQueryState,
-  setSelectedQuery,
-}) => {
+const QueryList: React.FC<Props> = ({ setQueryState }) => {
+  const queryList = [
+    {
+      name: 'EmployeeList',
+      type: 'Query',
+      queryDoc: EmployeeListDocument,
+    },
+    {
+      name: 'ItemList',
+      type: 'Query',
+      queryDoc: ItemListDocument,
+    },
+    {
+      name: 'OrderList',
+      type: 'Query',
+      queryDoc: OrderListDocument,
+    },
+    {
+      name: 'Order',
+      type: 'Query',
+      queryDoc: OrderDocument,
+      options: {
+        variables: { id: 'ed8484ee-6384-4aa8-a2c5-dcfc5f6066fe' },
+      },
+    },
+  ];
+
   const [expanded, setExpanded] = React.useState<number | false>(false);
+  const [selectedQueryState, setSelectedQueryState] =
+    React.useState<IQueryList>(null);
 
   const className = 'query-list';
 
@@ -32,7 +55,11 @@ const ControlledAccordions: React.FC<Props> = ({
       setExpanded(isExpanded ? panel : false);
     };
   React.useEffect(() => {
-    setSelectedQuery(expanded);
+    setExpanded(expanded);
+    if (expanded >= 0) {
+      const selectedQuery = queryList[expanded as number];
+      setSelectedQueryState(selectedQuery);
+    }
   }, [expanded]);
 
   return (
@@ -60,11 +87,12 @@ const ControlledAccordions: React.FC<Props> = ({
                 </AccordionSummary>
                 <AccordionDetails>
                   {/* inject only when accordion is open */}
-                  {expanded === i && queryDoc && (
+                  {expanded === i && selectedQueryState && (
                     <QueryDetail
                       setQueryState={setQueryState}
-                      queryDoc={queryDoc}
-                      options={options}
+                      selectedQuery={selectedQueryState}
+                      // queryDoc={queryDoc}
+                      // options={options}
                     />
                   )}
                 </AccordionDetails>
@@ -75,4 +103,4 @@ const ControlledAccordions: React.FC<Props> = ({
   );
 };
 
-export default ControlledAccordions;
+export default QueryList;

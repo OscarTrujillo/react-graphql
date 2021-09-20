@@ -1,36 +1,33 @@
-import { LazyQueryHookOptions, useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import * as React from 'react';
 import { print } from 'graphql/language/printer';
-import { DocumentNode } from 'graphql/language/ast';
 import { Button } from '@mui/material';
 import './query-detail.component.scss';
 interface Props {
-  queryDoc: DocumentNode;
-  options?: LazyQueryHookOptions;
+  selectedQuery: any;
   setQueryState: any;
 }
 
-const QueryDetail: React.FC<Props> = ({ queryDoc, options, setQueryState }) => {
-  const query = useLazyQuery(queryDoc, options);
+const QueryDetail: React.FC<Props> = ({ selectedQuery, setQueryState }) => {
+  const query = useLazyQuery(selectedQuery.queryDoc, selectedQuery.options);
   // const [loadGreeting, { called, loading, data, error }] = query;
   const loadGreeting = query[0];
 
-  setQueryState(query);
+  React.useEffect(() => {
+    setQueryState(query);
+  }, [query]);
 
   return (
     <div>
-      {/* {JSON.stringify(print(queryDoc))} */}
-      {/* <p>{print(queryDoc)}</p> */}
-      {/* todo: style it */}
       <div>
         <p>Document: </p>
 
-        {print(queryDoc)}
+        {print(selectedQuery.queryDoc)}
       </div>
       <div>
         <p>Options: </p>
 
-        {JSON.stringify(options)}
+        {JSON.stringify(selectedQuery.options)}
       </div>
       <Button onClick={() => loadGreeting()} variant="outlined">
         Make request
