@@ -16,7 +16,12 @@ const ResponseContainer: React.FC<Props> = ({ queryState }) => {
     }
 
     if (error || !data) {
-      return <div>ERROR</div>;
+      return (
+        <div>
+          ERROR:
+          <div>{error.message}</div>
+        </div>
+      );
     }
 
     return <ResponseView data={data} />;

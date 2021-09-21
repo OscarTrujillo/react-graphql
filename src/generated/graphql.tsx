@@ -42,7 +42,16 @@ export type Item = {
 };
 
 export type ItemInput = {
+  amount: Scalars['Int'];
   id: Scalars['ID'];
+};
+
+export type ItemSelection = {
+  __typename?: 'ItemSelection';
+  amount: Scalars['Int'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  price: Scalars['Float'];
 };
 
 export type Mutation = {
@@ -72,11 +81,13 @@ export type MutationCreateOrderArgs = {
 
 export type Order = {
   __typename?: 'Order';
+  createdAt: Scalars['Float'];
   customer: Customer;
   employee?: Maybe<Employee>;
   id: Scalars['ID'];
-  items?: Maybe<Array<Maybe<Item>>>;
+  items: Array<Maybe<ItemSelection>>;
   state: AllowedState;
+  updatedAt: Scalars['Float'];
 };
 
 export type Query = {
@@ -99,7 +110,7 @@ export type CreateOrderMutationVariables = Exact<{
 }>;
 
 
-export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items?: Maybe<Array<Maybe<{ __typename?: 'Item', id: string, name: string }>>> } };
+export type CreateOrderMutation = { __typename?: 'Mutation', createOrder: { __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items: Array<Maybe<{ __typename?: 'ItemSelection', id: string, name: string }>> } };
 
 export type AssignOrderMutationVariables = Exact<{
   orderId: Scalars['String'];
@@ -107,14 +118,14 @@ export type AssignOrderMutationVariables = Exact<{
 }>;
 
 
-export type AssignOrderMutation = { __typename?: 'Mutation', assignOrder: { __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items?: Maybe<Array<Maybe<{ __typename?: 'Item', id: string, name: string }>>>, employee?: Maybe<{ __typename?: 'Employee', id: string, email?: Maybe<string> }> } };
+export type AssignOrderMutation = { __typename?: 'Mutation', assignOrder: { __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items: Array<Maybe<{ __typename?: 'ItemSelection', id: string, name: string }>>, employee?: Maybe<{ __typename?: 'Employee', id: string, email?: Maybe<string> }> } };
 
 export type CompleteOrderMutationVariables = Exact<{
   orderId: Scalars['String'];
 }>;
 
 
-export type CompleteOrderMutation = { __typename?: 'Mutation', completeOrder: { __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items?: Maybe<Array<Maybe<{ __typename?: 'Item', id: string, name: string }>>>, employee?: Maybe<{ __typename?: 'Employee', id: string, email?: Maybe<string> }> } };
+export type CompleteOrderMutation = { __typename?: 'Mutation', completeOrder: { __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items: Array<Maybe<{ __typename?: 'ItemSelection', id: string, name: string }>>, employee?: Maybe<{ __typename?: 'Employee', id: string, email?: Maybe<string> }> } };
 
 export type EmployeeListQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -129,14 +140,14 @@ export type ItemListQuery = { __typename?: 'Query', items: Array<{ __typename?: 
 export type OrderListQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OrderListQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items?: Maybe<Array<Maybe<{ __typename?: 'Item', id: string, name: string }>>>, employee?: Maybe<{ __typename?: 'Employee', id: string, email?: Maybe<string> }> }> };
+export type OrderListQuery = { __typename?: 'Query', orders: Array<{ __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items: Array<Maybe<{ __typename?: 'ItemSelection', id: string, name: string }>>, employee?: Maybe<{ __typename?: 'Employee', id: string, email?: Maybe<string> }> }> };
 
 export type OrderQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type OrderQuery = { __typename?: 'Query', order?: Maybe<{ __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items?: Maybe<Array<Maybe<{ __typename?: 'Item', id: string, name: string }>>>, employee?: Maybe<{ __typename?: 'Employee', id: string, name?: Maybe<string>, email?: Maybe<string> }> }> };
+export type OrderQuery = { __typename?: 'Query', order?: Maybe<{ __typename?: 'Order', id: string, state: AllowedState, customer: { __typename?: 'Customer', id: string, name?: Maybe<string>, email?: Maybe<string> }, items: Array<Maybe<{ __typename?: 'ItemSelection', id: string, name: string }>>, employee?: Maybe<{ __typename?: 'Employee', id: string, name?: Maybe<string>, email?: Maybe<string> }> }> };
 
 
 export const CreateOrderDocument = gql`

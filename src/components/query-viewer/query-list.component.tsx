@@ -5,14 +5,23 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
+  AssignOrderDocument,
+  CompleteOrderDocument,
+  CreateOrderDocument,
   EmployeeListDocument,
   ItemListDocument,
   OrderDocument,
   OrderListDocument,
 } from './../../generated/graphql';
 import QueryDetail from './query-detail.component';
+import MutationDetail from './mutation-detail.component';
 import { IQueryList } from '../../App';
 import { OperationVariables, QueryTuple } from '@apollo/client';
+
+enum queryType {
+  Query = 'Query',
+  Mutation = 'Mutation',
+}
 
 interface Props {
   setQueryState: React.Dispatch<QueryTuple<any, OperationVariables>>;
@@ -21,25 +30,57 @@ const QueryList: React.FC<Props> = ({ setQueryState }) => {
   const queryList = [
     {
       name: 'EmployeeList',
-      type: 'Query',
+      type: queryType.Query,
       queryDoc: EmployeeListDocument,
     },
     {
       name: 'ItemList',
-      type: 'Query',
+      type: queryType.Query,
       queryDoc: ItemListDocument,
     },
     {
       name: 'OrderList',
-      type: 'Query',
+      type: queryType.Query,
       queryDoc: OrderListDocument,
     },
     {
-      name: 'Order',
-      type: 'Query',
+      name: 'OrderById',
+      type: queryType.Query,
       queryDoc: OrderDocument,
       options: {
         variables: { id: 'ed8484ee-6384-4aa8-a2c5-dcfc5f6066fe' },
+      },
+    },
+    {
+      name: 'CreateOrder',
+      type: queryType.Mutation,
+      queryDoc: CreateOrderDocument,
+      options: {
+        variables: {
+          customerEmail: 'homer@mail.com',
+          items: [{ id: 'c63330af-ce62-44c1-9393-f520df960e75', amount: 3 }],
+        },
+      },
+    },
+    {
+      name: 'AssignOrder',
+      type: queryType.Mutation,
+      queryDoc: AssignOrderDocument,
+      options: {
+        variables: {
+          orderId: 'ed8484ee-6384-4aa8-a2c5-dcfc5f6066fe',
+          employeeEmail: 'alice@mail.com',
+        },
+      },
+    },
+    {
+      name: 'CompleteOrder',
+      type: queryType.Mutation,
+      queryDoc: CompleteOrderDocument,
+      options: {
+        variables: {
+          orderId: 'ed8484ee-6384-4aa8-a2c5-dcfc5f6066fe',
+        },
       },
     },
   ];
@@ -55,7 +96,6 @@ const QueryList: React.FC<Props> = ({ setQueryState }) => {
       setExpanded(isExpanded ? panel : false);
     };
   React.useEffect(() => {
-    setExpanded(expanded);
     if (expanded >= 0) {
       const selectedQuery = queryList[expanded as number];
       setSelectedQueryState(selectedQuery);
@@ -87,14 +127,22 @@ const QueryList: React.FC<Props> = ({ setQueryState }) => {
                 </AccordionSummary>
                 <AccordionDetails>
                   {/* inject only when accordion is open */}
-                  {expanded === i && selectedQueryState && (
-                    <QueryDetail
-                      setQueryState={setQueryState}
-                      selectedQuery={selectedQueryState}
-                      // queryDoc={queryDoc}
-                      // options={options}
-                    />
-                  )}
+                  {expanded === i &&
+                    selectedQueryState &&
+                    selectedQueryState.type === queryType.Query && (
+                      <QueryDetail
+                        setQueryState={setQueryState}
+                        selectedQuery={selectedQueryState}
+                      />
+                    )}
+                  {expanded === i &&
+                    selectedQueryState &&
+                    selectedQueryState.type === queryType.Mutation && (
+                      <MutationDetail
+                        setQueryState={setQueryState}
+                        selectedQuery={selectedQueryState}
+                      />
+                    )}
                 </AccordionDetails>
               </Accordion>
             ),
